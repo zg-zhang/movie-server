@@ -8,10 +8,13 @@
   },
   "dependencies": {
     "axios": "^0.21.1",
+    "jsonwebtoken": "^8.5.1",
     "koa-bodyparser": "^4.3.0",
+    "koa-jwt": "^4.0.1",
     "koa-logger": "^3.2.1",
     "koa-router": "^10.0.0",
     "koa2": "^2.0.0-alpha.7",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "string-random": "^0.1.3"
   }
 }

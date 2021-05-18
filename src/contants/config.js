@@ -6,5 +6,6 @@ module.exports = {
     popularList: 'mtime-search/search/poplarShow',
     movieDetail: 'library/movie/detail.api?tt=1619712020690&locationId=290&movieId=',
 
-    host: '10000'
+    host: '8000',
+    secret: 'ZeGuo_Zhang'
 }
