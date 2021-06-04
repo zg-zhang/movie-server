@@ -1,7 +1,7 @@
 const Router = require('koa-router')
 const { secret } = require('../contants/config')
 const { response, getRandomString } = require('../tools/tools')
-const { find, add } = require('../tools/sql')
+const { find, add, findCustomize } = require('../tools/sql')
 const jwt = require('jsonwebtoken')
 
 const mainRouter = new Router()
@@ -26,8 +26,8 @@ mainRouter.post('/register', async ctx => {
 mainRouter.post('/login', async ctx => {
     const { phone, password } = ctx.request.body
     const data = await find('users', '', {phone})
-    if (!data.length) ctx.body = response({status: 'error'}, 200, '没有找到这个用户哦～')
-    if (data[0].password === password) {
+    if (!data.length)  ctx.body = response({status: 'error'}, 500, '没有找到这个用户哦～')
+    else if (data[0].password === password) {
         const token = jwt.sign({
             data: data[0].id
         }, secret)
@@ -41,7 +41,7 @@ mainRouter.post('/login', async ctx => {
         }
         ctx.body = response({status: 'success', token, info}, 200, '登录成功！')
     } else {
-        ctx.body = response({status: 'error'}, 200, '密码错啦～')
+        ctx.body = response({status: 'error'}, 500, '密码错啦～')
     }
 })
 
@@ -80,6 +80,12 @@ mainRouter.get('/getDetail/:id', async ctx => {
     const { id } = ctx.request.params
     const data = await find('movie', '', {id})
     ctx.body = response(data[0])
+})
+
+mainRouter.get('/search/:id', async ctx => {
+    const { id } = ctx.request.params
+    const data = await findCustomize('movie', `WHERE name Like '%${id}%' or nameEn like '%${id}%'`)
+    ctx.body = response(data)
 })
 
 module.exports = mainRouter

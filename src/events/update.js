@@ -30,59 +30,62 @@ async function getList(i, len) {
 }
 
 async function getDetail(ids, type, i) {
-    const response = await getMovieDetail(ids[i])
-    const res = response.data.basic
+    if (ids[i] == '270114') await getDetail(ids, type, i + 1)
+    else {
+        const response = await getMovieDetail(ids[i])
+        const res = response.data.basic
 
-    const data = {
-        actors: res.actors,
-        cover: res.bigImage,
-        countries: res.countries,
-        directors: res.directors,
-        tags: res.movieGenres,
-        id: res.movieId,
-        name: res.name,
-        nameEn: res.nameEn,
-        rating: res.overallRating,
-        productionCompanies: res.productionCompanies,
-        releaseDateNew: res.releaseDateNew,
-        stageImg: res.stageImg,
-        story: res.story,
-        videos: res.videos,
-        writers: res.writers,
-        type: type < 3 ? type : '',
-        isPopular: type === 3
-    }
-    const item = {
-        id: res.movieId,
-        cover: res.bigImage,
-        name: res.name,
-        nameEn: res.nameEn,
-        releaseDateNew: res.releaseDateNew,
-        type: type < 3 ? type : '',
-        isPopular: type === 3
-    }
+        const data = {
+            actors: res.actors,
+            cover: res.bigImage,
+            countries: res.countries,
+            directors: res.directors,
+            tags: res.movieGenres,
+            id: res.movieId,
+            name: res.name,
+            nameEn: res.nameEn,
+            rating: res.overallRating,
+            productionCompanies: res.productionCompanies,
+            releaseDateNew: res.releaseDateNew,
+            stageImg: res.stageImg,
+            story: res.story,
+            videos: res.videos,
+            writers: res.writers,
+            type: type < 3 ? type : '',
+            isPopular: type === 3
+        }
+        const item = {
+            id: res.movieId,
+            cover: res.bigImage,
+            name: res.name,
+            nameEn: res.nameEn,
+            releaseDateNew: res.releaseDateNew,
+            type: type < 3 ? type : '',
+            isPopular: type === 3
+        }
 
-    const has = await find('movie', '', {id: res.movieId})
+        const has = await find('movie', '', {id: res.movieId})
 
-    if (!has.length) {
-        await add('movie', data)
-        await add('list', item)
-    } else if (type < 3 && Number(has[0].type) !== type) {
-        console.log(`[数据更新] type ${type}`)
-        await update('movie', { type: `${has[0].type}${type}`}, { id: res.movieId })
-        await update('list', { type: `${has[0].type}${type}`}, { id: res.movieId })
-    } else if (type === 3 && has[0].isPopular === '0') {
-        console.log(`[数据更新] type ${type}`)
-        await update('movie', { isPopular: '1'}, { id: res.movieId })
-        await update('list', { isPopular: '1'}, { id: res.movieId })
-    } else {
-        console.log(`[数据已存在 跳过] ${res.movieId}`)
-    }
+        if (!has.length) {
+            await add('movie', data)
+            await add('list', item)
+        } else if (type < 3 && Number(has[0].type) !== type) {
+            console.log(`[数据更新] type ${type}`)
+            await update('movie', {type: `${has[0].type}${type}`}, {id: res.movieId})
+            await update('list', {type: `${has[0].type}${type}`}, {id: res.movieId})
+        } else if (type === 3 && has[0].isPopular === '0') {
+            console.log(`[数据更新] type ${type}`)
+            await update('movie', {isPopular: '1'}, {id: res.movieId})
+            await update('list', {isPopular: '1'}, {id: res.movieId})
+        } else {
+            console.log(`[数据已存在 跳过] ${res.movieId}`)
+        }
 
-    if (i < ids.length - 1) {
-        await getDetail(ids, type, i + 1)
-    } else {
-        console.log(`[${type} 更新完成]`)
+        if (i < ids.length - 1) {
+            await getDetail(ids, type, i + 1)
+        } else {
+            console.log(`[${type} 更新完成]`)
+        }
     }
 }
 

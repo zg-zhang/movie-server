@@ -40,8 +40,12 @@ const getPopularList = async () => {
 
 // 获取电影详情
 const getMovieDetail = async id => {
-    console.log(`[电影详情] ${id} 更新开始`)
-    return await request.get(`${movieDetail}${id}`)
+    if (id != '270114') {
+        console.log(`[电影详情] ${id} 更新开始`)
+        return await request.get(`${movieDetail}${id}`)
+    } else {
+        console.log(`[跳过] ${id}`)
+    }
 }
 
 const getQueue = [

@@ -60,6 +60,7 @@ exports.find = function find(table, order, data) {
 
 exports.findCustomize = function (table, query) {
 	const sql = `SELECT * FROM ${table} ${query}`
+	console.log(sql)
 	return new Promise((resolve, reject) => {
 		pool.query(sql, (err, result) => {
 			if (err) {
